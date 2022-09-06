@@ -1,5 +1,6 @@
 <template>
   <div>123</div>
+  <div>567</div>
 </template>
 
 <script>
