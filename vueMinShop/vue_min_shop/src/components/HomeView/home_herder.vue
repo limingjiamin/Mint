@@ -6,12 +6,13 @@
         <p class="wenzi">卡成本纳斯达克了吧舍不得你就啥的感觉比上年·</p>
       </el-col>
       <el-col :span="5">
-        <!-- <div class="weizhi2">
+        <div class="weizhi2">
                 <span>登录</span>
                 <span>|</span>
                 <span>注册</span>
-            </div> -->
-        <div class="touheader">
+            </div>
+
+        <!-- <div class="touheader">
           <div class="box5">
             <el-avatar
               src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
@@ -19,7 +20,9 @@
             ></el-avatar>
           </div>
           <div class="weizhi2"><span>你好</span></div>
-        </div>
+        </div> -->
+
+
       </el-col>
     </el-row>
     <div class="box"></div>
