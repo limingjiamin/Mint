@@ -1,26 +1,26 @@
 <template>
   <div>
     <el-row class="box2 box touheader">
-      <el-col :span="5"><i class="el-icon-search weizhi"></i></el-col>
+      <el-col :span="5"><i class="el-icon-search weizhi"  @click="search"></i></el-col>
       <el-col :span="14" class="box3">
         <p class="wenzi">卡成本纳斯达克了吧舍不得你就啥的感觉比上年·</p>
       </el-col>
       <el-col :span="5">
-        <div class="weizhi2">
-                <span>登录</span>
+        <div class="weizhi2" v-if="!off">
+                <span @click="login">登录</span>
                 <span>|</span>
-                <span>注册</span>
-            </div>
+                <span @click="login">注册</span>
+          </div>
 
-        <!-- <div class="touheader">
+        <div class="touheader" v-else>
           <div class="box5">
             <el-avatar
-              src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+              :src="iocn.avater"
               size="small"
             ></el-avatar>
           </div>
           <div class="weizhi2"><span>你好</span></div>
-        </div> -->
+        </div>
 
 
       </el-col>
@@ -29,7 +29,33 @@
   </div>
 </template>
 <script>
-export default {};
+
+import $http from '@/api/axios.js';
+
+export default {
+    created(){
+      let state=this.$store.state.mine.login_id;
+      if(state!=""){
+        this.off=true
+        $http("/my/user",{id:2},"POST").then(({data})=>this.iocn=data)
+      }
+    },
+    data(){
+      return{
+        off:false,
+        iocn:"",
+      }
+    },
+    methods:{
+      search(){
+       this.$router.push("/search");
+     },
+     login(){
+        this.$router.push("/login");
+     }
+    }
+     
+};
 </script>
 <style scoped>
 .box {
@@ -52,7 +78,7 @@ export default {};
 }
 
 .weizhi {
-  margin-left: 10px;
+  margin-left: -40px;
 }
 
 .weizhi2 {
