@@ -42,11 +42,7 @@ const routes = [
   },
   {
     path: "/food",
-<<<<<<< HEAD
     name: "商家",
-=======
-    name: "餐品",
->>>>>>> b0da6f57a1ff356c5603439e98c379d9c1c43cd1
     component: () => import("../views/FoodView/food.vue"),
   },
   {
