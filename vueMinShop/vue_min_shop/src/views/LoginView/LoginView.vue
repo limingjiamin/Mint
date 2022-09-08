@@ -79,7 +79,7 @@ export default {
       console.log("用户密码方式登录");
     },
     goHome() {
-      console.log("跳转到首页");
+      console.log("跳转到首页!");
     },
   },
 };
