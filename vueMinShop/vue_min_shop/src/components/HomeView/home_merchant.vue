@@ -3,17 +3,17 @@
     <el-card
       :body-style="{ padding: '0 5px 5px 5px' }"
       shadow="never"
-      v-for="(item, index) in 10"
-      :key="item"
+      v-for="(item, index) in arr"
+      :key="item.id"
     >
       <h4 v-if="first == index" style="margin-top: 5px">附近商家</h4>
       <div class="box2">
-        <el-image class="imga" :src="url" fit="fit"> </el-image>
+        <el-image class="imga" :src="item.s_img" fit="fit"> </el-image>
         <div class="box3">
           <el-row>
             <el-col :span="18"
               ><span class="span1">品牌</span
-              ><span class="span2">几个亿品(文斗水城)</span></el-col
+              ><span class="span2">{{item.shopName}}</span></el-col
             >
             <el-col :span="6"
               ><span v-for="item in 3" :key="item" class="span3"
@@ -23,19 +23,25 @@
           </el-row>
           <el-row class="box4">
             <el-col :span="18"
-              ><span
+              >
+              <span
                 class="el-icon-star-on span4"
-                v-for="item in 5"
-                :key="item"
-              ></span
-              ><span class="span5">4.8</span>
-              <span class="span6">月售106单</span></el-col
+                v-for="(items,indexs) in Math.floor(item.score)"
+                :key="items+'ha'" 
+              ></span>
+              <span
+                class="el-icon-star-off span4"
+                v-for="(items,indexs) in 5-Math.floor(item.score)"
+                :key="indexs" 
+              ></span>
+              <span class="span5">{{item.score}}</span>
+              <span class="span6">月售{{item.sales}}单</span></el-col
             >
-            <el-col :span="6"><span class="span7">美团专送</span></el-col>
+            <el-col :span="6"><span class="span7">{{item.distribution}}</span></el-col>
           </el-row>
           <el-row class="box4">
             <el-col :span="24"
-              ><span class="span6">￥20起送/配送费约为￥5 </span></el-col
+              ><span class="span6">￥{{item.qisong}}起送/配送费约为￥5 </span></el-col
             >
           </el-row>
         </div>
@@ -44,12 +50,27 @@
   </div>
 </template>
 <script>
+import $http from '@/api/axios.js';
 export default {
+  created(){
+     $http("/home/shop_list").then(({data})=>this.food_list=data);
+     
+  },
   data() {
     return {
+      food_list:"",
       first: 0,
-      url: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
+      end:5,
+     
     };
+  },
+  computed:{
+     arr(){
+     return  Array.from(this.food_list).filter((item,index)=>index<this.end) 
+     },
+  },
+  methods:{
+
   },
 };
 </script>
@@ -60,6 +81,7 @@ export default {
   padding-top: 10px;
   background: rgb(232, 232, 232);
   margin-top: 12px;
+  text-align: left;
 }
 
 .box2 {
