@@ -43,13 +43,13 @@ const routes = [
   {
     path: "/food",
     name: "商家",
-    component: () => import("../views/FoodView/food.vue"),
+    component: () => import("../views/FoodView/FoodView.vue"),
   },
   {
     path: "/*",
     name: "404",
     component: () => import("../views/NotView/NotView.vue"),
-  }
+  },
 ];
 
 const router = new VueRouter({

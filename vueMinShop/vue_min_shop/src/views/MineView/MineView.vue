@@ -101,15 +101,14 @@ export default {
   },
   methods: {
     goLogin() {
-      console.log(11111);
       this.$router.push("/login");
     },
   },
   created() {
-    $http("/my/user_info").then((res)=>{
+    $http("/my/user_info").then((res) => {
       console.log(res);
-      this.usermenu=res.data
-    })
+      this.usermenu = res.data;
+    });
     let state = this.$store.state.mine.login_id;
     if (state !== "") {
       this.off = true;
