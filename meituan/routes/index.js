@@ -29,11 +29,6 @@ router.post("/login_pwd", async (req, res) => {
         code: 400,
         data: "请你输入正确的密码哦",
       });
-    } else if (data[2].length == 0) {
-      res.json({
-        code: 400,
-        data: "请你输入正确的验证码哦",
-      });
     } else {
       res.json({
         code: 200,

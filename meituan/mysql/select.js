@@ -20,10 +20,9 @@ class select {
     let { name, pwd, captcha } = para;
     if (name == undefined ||name=="") return "name";
     if (pwd == undefined||pwd=="") return "pwd";
-    if (captcha == undefined|| captcha=="") return "captcha";
     let sql1 = `select * from ${table} where name='${name}'`;
     let sql2 = `select * from ${table} where name='${name}' and pwd='${pwd}'`;
-    sql = `select * from ${table} where name='${name}' and pwd='${pwd}' and captcha='${captcha}';`;
+    sql = `select * from ${table} where name='${name}' and pwd='${pwd}';`;
     return new Promise((resolve) => {
       let arr = [];
       arr.length
@@ -40,8 +39,8 @@ class select {
           });
         });
       });
-      
-      
+
+
     });
   }
   //手机验证码
@@ -66,7 +65,7 @@ class select {
       });
     });
   }
-  
+
   // 4.用户信息
   user_info(table){
    sql=`select * from ${table} `;
@@ -81,7 +80,7 @@ class select {
   user(table,para){
     let {id}=para;
     sql=`select * from ${table} where id='${id}'`;
-   
+
     return new Promise((resolve)=>{
       pool.query(sql,(err,result)=>{
         if(err) throw err;

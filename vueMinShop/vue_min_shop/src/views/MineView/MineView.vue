@@ -2,7 +2,7 @@
   <div>
     <el-container>
       <el-header>我的</el-header>
-      <el-container>
+      <el-container v-if="!off">
         <el-aside width="50px">
           <div>
             <el-avatar size="large" icon="el-icon-user-solid"></el-avatar>
@@ -17,8 +17,26 @@
                 <span>暂无绑定手机号</span>
               </el-row>
             </el-col>
-            <el-col :span="2">
+            <el-col :span="2" @click="goLogin" style="background-color: red">
               <i class="el-icon-arrow-right"></i>
+            </el-col>
+          </el-row>
+        </el-main>
+      </el-container>
+      <el-container v-else>
+        <el-aside width="50px">
+          <div>
+            <el-avatar size="large" :src="user.avatar"></el-avatar>
+          </div>
+        </el-aside>
+        <el-main>
+          <el-row>
+            <el-col :span="24">
+              <el-row>手机号</el-row>
+              <el-row>
+                <i class="el-icon-mobile-phone"></i>
+                <span>{{ user.phone }}</span>
+              </el-row>
             </el-col>
           </el-row>
         </el-main>
@@ -54,44 +72,58 @@
         <i class="el-icon-arrow-right"></i>
       </li>
     </ul>
+    <navigation></navigation>
   </div>
 </template>
 
 <script>
+// import { mapState } from "vuex";
+import navigation from "@/components/navigation_view";
+import $http from "@/api/axios";
+
 export default {
   name: "MineView",
   data() {
     return {
+      off: false,
       user: {
         balance: 0.0,
         discount: 0,
         integral: 0,
-        avatar: "头像地址",
+        avatar: "",
         phone: 1827272222,
       },
-      usermenu: [
-        {
-          id: 1,
-          iclass: "el-icon-s-order",
-          umenu: "我的订单",
-        },
-        {
-          id: 2,
-          iclass: "el-icon-shopping-bag-1",
-          umenu: "积分商城",
-        },
-        {
-          id: 3,
-          iclass: "el-icon-bank-card",
-          umenu: "Mint外卖会员卡",
-        },
-        {
-          id: 4,
-          iclass: "el-icon-service",
-          umenu: "服务中心",
-        },
-      ],
+      usermenu: [],
     };
+  },
+  components: {
+    navigation,
+  },
+  methods: {
+    goLogin() {
+      console.log(11111);
+      this.$router.push("/login");
+    },
+  },
+  created() {
+    $http("/my/user_info").then((res)=>{
+      console.log(res);
+      this.usermenu=res.data
+    })
+    let state = this.$store.state.mine.login_id;
+    if (state !== "") {
+      this.off = true;
+      $http("/my/user", { id: this.$store.state.mine.login_id }, "POST").then(
+        (res) => {
+          console.log(res);
+          this.user.balance = res.data[0].balance;
+          this.user.discount = res.data[0].discount;
+          this.user.integral = res.data[0].integral;
+          this.user.avatar = res.data[0].avatar;
+          this.user.phone = res.data[0].phone;
+        }
+      );
+    }
   },
 };
 </script>
@@ -164,22 +196,28 @@ ul {
   padding: 0 10px;
   text-align: left;
   font-size: 18px;
+
   li {
     padding: 10px 0;
+
     > i {
       float: right;
     }
   }
 }
+
 .el-icon-s-order {
   color: @orange;
 }
+
 .el-icon-shopping-bag-1 {
   color: @red;
 }
+
 .el-icon-bank-card {
   color: @green;
 }
+
 .el-icon-service {
   color: @blue;
 }

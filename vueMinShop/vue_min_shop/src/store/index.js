@@ -7,15 +7,23 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   plugins: [pers()],
   state: {
-    home:{
-      serach:"",
+    home: {
+      serach: "",
     },
-    mine:{
-      login_id:"",
-    }
+    mine: {
+      login_id: "",
+    },
   },
   getters: {},
-  mutations: {},
-  actions: {},
+  mutations: {
+    HANDLE_ID(state, val) {
+      state.mine.login_id = val;
+    },
+  },
+  actions: {
+    handle_id(context, val) {
+      context.commit("HANDLE_ID", val);
+    },
+  },
   modules: {},
 });

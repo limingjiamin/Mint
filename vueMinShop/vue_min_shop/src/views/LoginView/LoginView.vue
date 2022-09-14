@@ -1,3 +1,4 @@
+<script src="../../router/index.js"></script>
 <template>
   <div>
     <el-row>
@@ -68,6 +69,7 @@
 
 <script>
 import $http from "@/api/axios";
+
 export default {
   name: "LoginView",
   data() {
@@ -100,14 +102,44 @@ export default {
   },
   methods: {
     handleCaptcha() {
-      $http("/sendcode", { phone: this.ruleForm.phone }, "GET");
-      console.log("获取验证码");
+      $http("/sendcode", { phone: this.ruleForm.phone }, "GET").then((data) => {
+        if (data.code === 200) {
+          alert("验证码0000");
+        } else {
+          alert("请重新获取验证码");
+        }
+      });
     },
     loginCode() {
-      console.log("手机验证码方式登录");
+      $http(
+        "/login_sms",
+        { phone: this.ruleForm.phone, code: this.ruleForm.code },
+        "POST"
+      ).then((res) => {
+        console.log(res);
+        console.log("login_id", res.data[0].id);
+        if (res.code === 200) {
+          this.$store.commit("HANDLE_ID", res.data[0].id);
+          this.$router.push("/home");
+        } else {
+          alert("验证码不正确");
+        }
+      });
     },
     loginPwd() {
-      console.log("用户密码方式登录");
+      $http(
+        "/login_pwd",
+        { name: this.ruleForm.name, pwd: this.ruleForm.pwd },
+        "POST"
+      ).then((res) => {
+        console.log(res);
+        if (res.code === 200) {
+          this.$store.commit("HANDLE_ID", res.data[0].id);
+          this.$router.push("/home");
+        } else {
+          alert("账户密码不正确");
+        }
+      });
     },
     goHome() {
       this.$router.push("/home");

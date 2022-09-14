@@ -8,7 +8,7 @@ router.get("/user_info", async (req, res) => {
   console.log(data);
   res.json({
     code: 200,
-    meg: data,
+    data: data,
   });
 });
 //5 用户详情

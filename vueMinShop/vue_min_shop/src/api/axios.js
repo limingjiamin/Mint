@@ -10,7 +10,7 @@ import axios from "axios";
  */
 export default function ajax(url = "", data = {}, type = "GET") {
   // 返回值 Promise对象 （异步返回的数据是response.data，而不是response）
-  url="http://localhost:3000"+url;
+  url = "http://localhost:3000" + url;
   return new Promise(function (resolve, reject) {
     // （利用axios）异步执行ajax请求
     let promise; // 这个内部的promise用来保存axios的返回值(promise对象)
