@@ -17,8 +17,10 @@
                 <span>暂无绑定手机号</span>
               </el-row>
             </el-col>
-            <el-col :span="2" @click="goLogin" style="background-color: red">
-              <i class="el-icon-arrow-right"></i>
+            <el-col :span="2">
+              <el-button @click="goLogin">
+                <i class="el-icon-arrow-right"></i>
+              </el-button>
             </el-col>
           </el-row>
         </el-main>
@@ -31,12 +33,15 @@
         </el-aside>
         <el-main>
           <el-row>
-            <el-col :span="24">
+            <el-col :span="22">
               <el-row>手机号</el-row>
               <el-row>
                 <i class="el-icon-mobile-phone"></i>
                 <span>{{ user.phone }}</span>
               </el-row>
+            </el-col>
+            <el-col :span="2">
+              <el-button @click="LoginOut">退出</el-button>
             </el-col>
           </el-row>
         </el-main>
@@ -102,6 +107,9 @@ export default {
   methods: {
     goLogin() {
       this.$router.push("/login");
+    },
+    LoginOut() {
+      this.$store.commit("HANDLE_ID", "");
     },
   },
   created() {
