@@ -4,8 +4,8 @@ let pool=mysql.createPool({
     host: "localhost",
     post:3306,
     user: "root",
-    password:"123456",
-    database:"meituan",
+    password:"root",
+    database:"vue-mintshop",
     connectionLimit:10,
 });
 
