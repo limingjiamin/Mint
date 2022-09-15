@@ -50,7 +50,7 @@ const routes = [
     path: "/*",
     name: "404",
     component: () => import("../views/NotView/NotView.vue"),
-  }
+  },
 ];
 
 const router = new VueRouter({

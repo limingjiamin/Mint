@@ -13,7 +13,7 @@
           <el-row>
             <el-col :span="18"
               ><span class="span1">品牌</span
-              ><span class="span2">{{item.shopName}}</span></el-col
+              ><span class="span2">{{ item.shopName }}</span></el-col
             >
             <el-col :span="6"
               ><span v-for="item in 3" :key="item" class="span3"
@@ -22,26 +22,29 @@
             >
           </el-row>
           <el-row class="box4">
-            <el-col :span="18"
-              >
+            <el-col :span="18">
               <span
                 class="el-icon-star-on span4"
-                v-for="(items,indexs) in Math.floor(item.score)"
-                :key="items+'ha'" 
+                v-for="items in Math.floor(item.score)"
+                :key="items + 'ha'"
               ></span>
               <span
                 class="el-icon-star-off span4"
-                v-for="(items,indexs) in 5-Math.floor(item.score)"
-                :key="indexs" 
+                v-for="(items, indexs) in 5 - Math.floor(item.score)"
+                :key="indexs"
               ></span>
-              <span class="span5">{{item.score}}</span>
-              <span class="span6">月售{{item.sales}}单</span></el-col
+              <span class="span5">{{ item.score }}</span>
+              <span class="span6">月售{{ item.sales }}单</span></el-col
             >
-            <el-col :span="6"><span class="span7">{{item.distribution}}</span></el-col>
+            <el-col :span="6"
+              ><span class="span7">{{ item.distribution }}</span></el-col
+            >
           </el-row>
           <el-row class="box4">
             <el-col :span="24"
-              ><span class="span6">￥{{item.qisong}}起送/配送费约为￥5 </span></el-col
+              ><span class="span6"
+                >￥{{ item.qisong }}起送/配送费约为￥5
+              </span></el-col
             >
           </el-row>
         </div>
@@ -50,23 +53,24 @@
   </div>
 </template>
 <script>
-import $http from '@/api/axios.js';
+import $http from "@/api/axios.js";
 export default {
   created(){
      $http("/home/shop_list").then(({data})=>this.food_list=data); 
   },
   data() {
     return {
-      food_list:"",
+      food_list: "",
       first: 0,
-      end:5,
-     
+      end: 5,
     };
   },
-  computed:{
-     arr(){
-     return  Array.from(this.food_list).filter((item,index)=>index<this.end) 
-     },
+  computed: {
+    arr() {
+      return Array.from(this.food_list).filter(
+        (item, index) => index < this.end
+      );
+    },
   },
   methods:{
       meg(payload){
