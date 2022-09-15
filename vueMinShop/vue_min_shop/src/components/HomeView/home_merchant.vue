@@ -41,7 +41,7 @@
           </el-row>
           <el-row class="box4">
             <el-col :span="24"
-              ><span class="span6">￥{{item.qisong}}起送/配送费约为￥5 </span></el-col
+              ><span class="span6">￥{{item.qisong}}起送/配送费约为￥10 </span></el-col
             >
           </el-row>
         </div>
