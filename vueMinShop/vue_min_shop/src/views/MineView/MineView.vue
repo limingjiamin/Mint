@@ -17,8 +17,8 @@
                 <span>暂无绑定手机号</span>
               </el-row>
             </el-col>
-            <el-col :span="2" @click="goLogin" style="background-color: red">
-              <i class="el-icon-arrow-right"></i>
+            <el-col :span="2">
+              <i class="el-icon-arrow-right" @click="goLogin"></i>
             </el-col>
           </el-row>
         </el-main>
@@ -31,12 +31,15 @@
         </el-aside>
         <el-main>
           <el-row>
-            <el-col :span="24">
+            <el-col :span="18">
               <el-row>手机号</el-row>
               <el-row>
                 <i class="el-icon-mobile-phone"></i>
                 <span>{{ user.phone }}</span>
               </el-row>
+            </el-col>
+            <el-col :span="6">
+              <el-button @click="LoginOut" round>退出</el-button>
             </el-col>
           </el-row>
         </el-main>
@@ -72,13 +75,10 @@
         <i class="el-icon-arrow-right"></i>
       </li>
     </ul>
-    <navigation></navigation>
   </div>
 </template>
 
 <script>
-// import { mapState } from "vuex";
-import navigation from "@/components/navigation_view";
 import $http from "@/api/axios";
 
 export default {
@@ -96,12 +96,14 @@ export default {
       usermenu: [],
     };
   },
-  components: {
-    navigation,
-  },
   methods: {
     goLogin() {
       this.$router.push("/login");
+    },
+    LoginOut() {
+      console.log(111);
+      this.$store.commit("HANDLE_ID", "");
+      this.$router.push("/home");
     },
   },
   created() {
