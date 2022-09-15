@@ -7,7 +7,7 @@
       :key="item.id"
     >
       <h4 v-if="first == index" style="margin-top: 5px">附近商家</h4>
-      <div class="box2">
+      <div class="box2"  @click="meg(item.id)">
         <el-image class="imga" :src="item.s_img" fit="fit"> </el-image>
         <div class="box3">
           <el-row>
@@ -53,8 +53,7 @@
 import $http from '@/api/axios.js';
 export default {
   created(){
-     $http("/home/shop_list").then(({data})=>this.food_list=data);
-     
+     $http("/home/shop_list").then(({data})=>this.food_list=data); 
   },
   data() {
     return {
@@ -70,7 +69,9 @@ export default {
      },
   },
   methods:{
-
+      meg(payload){
+          this.$router.push(`/food/${payload}`);
+      }
   },
 };
 </script>

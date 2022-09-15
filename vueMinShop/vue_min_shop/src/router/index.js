@@ -41,9 +41,10 @@ const routes = [
     component: () => import("../views/LoginView/LoginView.vue"),
   },
   {
-    path: "/food",
+    path: "/food/:id",
     name: "商家",
-    component: () => import("../views/FoodView/food.vue"),
+    props:true,
+    component: () => import("../views/FoodView/FoodView.vue"),
   },
   {
     path: "/*",
