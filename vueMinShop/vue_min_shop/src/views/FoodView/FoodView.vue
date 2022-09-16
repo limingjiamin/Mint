@@ -2,12 +2,19 @@
 
   <el-container>
     <div class="demo-image">
+      <div class="goback">
+        <router-link to="/home">
+          <i class="el-icon-arrow-left"></i>
+        </router-link>
+      </div>
       <el-image
           style="width: 375px; height: 120px"
           :src="url"></el-image>
     </div>
     <el-header height="120px">
-      <div class="logo"></div>
+      <div class="logo">
+        <el-image :src="logo_url"></el-image>
+      </div>
       <div class="title">
         <el-tag type="warning" size="mini">品牌</el-tag>
         <h2>{{ shopName }}</h2>
@@ -16,7 +23,7 @@
       <p class="shop_info">
         <span>4.2</span>
         <span>月售{{num}}单</span>
-        <span>硅谷转送</span>
+        <span>{{zhuangsong}}</span>
         <span>约{{time}}分钟</span>
         <span>距离{{long}}米</span>
       </p>
@@ -29,27 +36,24 @@
             @open="handleOpen"
             @close="handleClose"
             background-color="rgb(244,245,247)">
-          <el-menu-item v-for="(nav,index) in nav_li" :key="nav" :index="index" @click="toJump(index)">
-            <!--            <i class="el-icon-setting"></i>-->
+          <el-menu-item v-for="(nav,index) in nav_li" :key="index">
             <span slot="title">{{nav}}</span>
+            <!--            <span slot="title">{{navIndex}}</span>-->
           </el-menu-item>
         </el-menu>
       </el-aside>
       <el-main class="food_warp">
-        <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto">
-          <!--          <li v-for="i in count" class="infinite-list-item">-->
-
-          <!--          </li>-->
-          <div></div>
-          <li v-for="(item,index) in list_info" :key="item">
+        <ul class="infinite-list" style="overflow:auto">
+          <!--          <div></div>-->
+          <li v-for="(item,index) in list_info" :key="index">
             <div>
               <el-image
                   style="width: 60px; height: 60px"
                   :src="url"></el-image>
             </div>
             <div class="product">
-              <h5>{{item.name}}</h5>
-              <p>{{item.desc}}</p>
+              <h5>{{item.f_name}}</h5>
+              <p>{{item.introduce}}</p>
               <p>月售{{item.sell_num}}份   好评率{{item.good_reputation}}%</p>
               <p style="color: red">￥{{item.price}}</p>
               <el-button type="success" circle @click="add_product(item)">
@@ -78,7 +82,7 @@
         :direction="direction"
         :before-close="drawerClose">
       <ul class="drawer">
-        <li v-for="item in car_list" :key="item">
+        <li v-for="(item,index)  in car_list" :key="index">
           <div>
             <el-image
                 style="width: 60px; height: 60px"
@@ -94,7 +98,7 @@
               <i class="el-icon-minus"></i>
             </el-button>
             <span>{{item.num}}</span>
-            <el-button type="success" circle @click="addnum(item)">
+            <el-button type="success" circle @click="AddNum(item)">
               <i class="el-icon-plus"></i>
             </el-button>
           </div>
@@ -107,18 +111,21 @@
 </template>
 
 <script>
-import BScroll from 'better-scroll'
+// import BScroll from 'better-scroll'
+import  $http from "../../api/axios"
 export default {
-  name: "food",
+  name: "FoodView",
   data(){
     return{
       url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-      shopName:"嘉和一品(温都水城)",
+      shopName:"",
       num:90,//月售数量
+      logo_url:'',//店铺图片
+      zhuangsong:"",
       time:28,//配送时间
       long:1000,//距离
       //左侧导航
-      nav_li:["优惠","折扣","香浓甜粥","营养咸粥","爽口凉菜","精选套餐","果品果汁","小吃主食","特色粥品"],
+      nav_li:[],
       //最低起送价格
       low_price:20,
       //配送费
@@ -129,54 +136,67 @@ export default {
       direction:'btt',
       // 商品列表
       list_info:[
-        {name:"南瓜粥",desc:"甜粥",sell_num:"20",good_reputation:"20",price:"9"},
-        {name:"红豆薏米美肤粥",desc:"甜粥",sell_num:"86",good_reputation:"20",price:"12"},
-        {name:"南瓜粥",desc:"甜粥",sell_num:"20",good_reputation:"20",price:"9"},
-        {name:"南瓜粥",desc:"甜粥",sell_num:"20",good_reputation:"20",price:"9"},
-        {name:"八宝酱菜",desc:"",sell_num:"84",good_reputation:"50",price:"4"},
-        {name:"南瓜粥",desc:"甜粥",sell_num:"20",good_reputation:"20",price:"9"},
-        {name:"红豆薏米美肤粥",desc:"甜粥",sell_num:"86",good_reputation:"20",price:"12"},
-        {name:"南瓜粥",desc:"甜粥",sell_num:"20",good_reputation:"20",price:"9"},
-        {name:"南瓜粥",desc:"甜粥",sell_num:"20",good_reputation:"20",price:"9"},
+        // {name:"南瓜粥",desc:"甜粥",sell_num:"20",good_reputation:"20",price:"9"},
+        // {name:"红豆薏米美肤粥",desc:"甜粥",sell_num:"86",good_reputation:"20",price:"12"},
       ],
+      // p_url:"",//商品图片
       // 抽屉中的列表
       car_list:[],
       //
-      car_pro_num:1
+      car_pro_num:1,
+      prpo:-1
     }
   },
   //首次访问页面访问数据
   mounted() {
-    this._initScroll();
+    //获取商铺id
+      let url = location.search; //获取url中"?"符后的字串
+      let theRequest = new Object();
+      if (url.indexOf("?") != -1) {
+        let str = url.substr(1);
+        if (str.indexOf("&") != -1) {
+          let strs = str.split("&");
+          for (let i = 0; i < strs.length; i++) {
+            theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+          }
+        } else {
+          theRequest[str.split("=")[0]] = unescape(str.split("=")[1]);
+        }
+      }
+      console.log(theRequest)
+      // this.prpo=theRequest;
+
+    let param={
+      s_id:1,
+      n_id:1
+    }
+    // this._initScroll();
+    // this.get_shop_Id();
+    //初始化商家信息
+    $http("/home/shop_img",{id:1}).then(({data}) =>{
+      // data是一个数组
+      this.shopName=data[0].shopName;
+      this.num=data[0].sales;
+      this.low_price=data[0].qisong;
+      this.zhuangsong=data[0].distribution;
+      this.logo_url=data[0].s_img;
+    })
+    //初始化左侧导航
+    $http("/home/nav_list",{id:1}).then(({data}) =>{
+      let arr=[];
+      data.forEach(item=>{
+        arr.push(item.n_name)
+        this.nav_li=arr;
+      })
+    })
+    //初始化右侧商品ewq
+    $http("/home/foods_list",param).then(({data}) =>{
+      console.log(data);
+      this.list_info=data;
+
+    })
   },
   methods: {
-    // 初始化滚动
-    _initScroll () {
-      // 列表显示之后创建
-      this.foodsScroll = new BScroll('.food_warp', {
-        probeType: 2, // 因为惯性滑动不会触发
-        click: true
-      })
-
-      // 给右侧列表绑定scroll监听
-      this.foodsScroll.on('scroll', ({x, y}) => {
-        console.log(x, y)
-        this.scrollY = Math.abs(y)
-      })
-      // 给右侧列表绑定scroll结束的监听
-      this.foodsScroll.on('scrollEnd', ({x, y}) => {
-        console.log('scrollEnd', x, y)
-        this.scrollY = Math.abs(y)
-      })
-    },
-    //访问商家
-    // axios.get("/url").then(res=>{
-    //
-    // })
-    //访问导航列表
-    // axios.get("/url",{}).then(res=>{
-    //   this.nav_li=res;
-    // }),
     handleOpen(key, keyPath) {
       console.log(key, keyPath);
     },
@@ -208,7 +228,7 @@ export default {
       done()
     },
     //数量加减
-    addnum(item){
+    AddNum(item){
       item.num=item.num+1;
       //计算价格
       this.now_price+=Number(item.price)
@@ -231,15 +251,23 @@ export default {
         this.btn=true;
       }
     },
-    //定位
-    toJump(index){
-      this.refs[index].scrollIntoView(true)
+    To_order(){
+      console.log("下单了")
     }
   }
 }
 </script>
 
 <style scoped lang="less">
+.goback{
+  position: fixed;
+  top: 15px;
+  left: 13px;
+  //background: #000;
+  z-index: 5;
+  width: 16px;
+  height: 20px;
+}
 .logo{
 
 
@@ -261,8 +289,9 @@ export default {
 }
 .shop_info{
   line-height: 20px;
-  margin-top: -12px;
+  //margin-top: -12px;
   color: rgb(122,122,122);
+  margin: 5px;
 }
 .el-dropdown-link {
   cursor: pointer;
@@ -302,6 +331,7 @@ export default {
   color: #333;
   text-align: center;
   line-height: 200px;
+  height: 600px;
 }
 
 .el-main {
@@ -309,6 +339,7 @@ export default {
   color: #333;
   text-align: left;
   //line-height: 160px;
+  height:600px;
 }
 
 body > .el-container {
@@ -361,6 +392,19 @@ body > .el-container {
 .infinite-list{
   li{
     margin: 10px 0;
+    position: relative;
+    .el-button{
+      width: 20px;
+      height: 20px;
+      position: absolute;
+      top: 36px;
+      right: 10px;
+      i{
+        position: absolute;
+        top: 5px;
+        right: 5px;
+      }
+    }
   }
   .product{
     margin-left: 5px;
@@ -369,19 +413,19 @@ body > .el-container {
     }
     font-size: 12px;
     color: rgb(151,151,151);
-    position: relative;
-    .el-button{
-      width: 20px;
-      height: 20px;
-      position: absolute;
-      top: 36px;
-      right: -64px;
-      i{
-        position: absolute;
-        top: 5px;
-        right: 5px;
-      }
-    }
+    //position: relative;
+    //.el-button{
+    //  width: 20px;
+    //  height: 20px;
+    //  position: absolute;
+    //  top: 36px;
+    //  right: -64px;
+    //  i{
+    //    position: absolute;
+    //    top: 5px;
+    //    right: 5px;
+    //  }
+    //}
   }
   li{
     display: flex;
